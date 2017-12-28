@@ -1,0 +1,64 @@
+version: '3.0'
+
+services:
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Kevinchen599
+    volumes:
+      - ~/pankmedia.com/data/mysql:/var/lib/mysql
+
+  wordpress:
+    image: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_PASSWORD: Kevinchen599
+      LETSENCRYPT_EMAIL: 592719479@qq.com
+      LETSENCRYPT_HOST: pankmedia.com
+      VIRTUAL_HOST: pankmedia.com
+    volumes:
+      - ~/pankmedia.com/data/wordpress:/var/www/html
+    depends_on:
+      - mysql
+
+  nginx-redirect:
+    image: schmunk42/nginx-redirect
+    restart: always
+    environment:
+      SERVER_REDIRECT: pankmedia.com
+      LETSENCRYPT_EMAIL: 592719479@qq.com
+      LETSENCRYPT_HOST: www.pankmedia.com
+      VIRTUAL_HOST: www.pankmedia.com
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - wordpress
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true 
+    volumes:
+      - ~/pankmedia.com/proxy_custom.conf:/etc/nginx/conf.d/proxy_custom.conf
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ~/pankmedia.com/data/letsencrypt/certs:/etc/nginx/certs:ro
+      - ~/pankmedia.com/data/letsencrypt/vhost.d:/etc/nginx/vhost.d:ro
+      - ~/pankmedia.com/data/letsencrypt/html:/usr/share/nginx/html:ro
+    environment:
+      HTTPS_METHOD: noredirect
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ~/pankmedia.com/data/letsencrypt/certs:/etc/nginx/certs
+      - ~/pankmedia.com/data/letsencrypt/vhost.d:/etc/nginx/vhost.d
+      - ~/pankmedia.com/data/letsencrypt/html:/usr/share/nginx/html
+
