@@ -10,7 +10,9 @@ Start a blog platform([WordPress](https://wordpress.org/) or [Ghost](https://gho
 
 ## Usage
 
-- Change domain names, email addresses and paths in the YAML files.
+- [Install Docker](https://docs.docker.com/engine/installation/).
+
+- Change domain names, email addresses and paths in the `YAML` files.
 
 - Start [WordPress](https://wordpress.org/) with:
 
