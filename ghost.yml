@@ -1,0 +1,67 @@
+version: '3.0'
+
+services:
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: xiaoxiang
+    volumes:
+      - ~/xiaoxiang.io/data/mysql:/var/lib/mysql
+
+  ghost:
+    image: ghost
+    restart: always
+    environment:
+      # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
+      database__client: mysql
+      database__connection__host: mysql
+      database__connection__user: root
+      database__connection__password: xiaoxiang
+      database__connection__database: ghost
+      LETSENCRYPT_EMAIL: shdxiang@qq.com
+      LETSENCRYPT_HOST: xiaoxiang.io
+      VIRTUAL_HOST: xiaoxiang.io
+    volumes:
+      - ~/xiaoxiang.io/data/ghost:/var/lib/ghost/content
+    depends_on:
+      - mysql
+
+  nginx-redirect:
+    image: schmunk42/nginx-redirect
+    restart: always
+    environment:
+      SERVER_REDIRECT: xiaoxiang.io
+      LETSENCRYPT_EMAIL: shdxiang@qq.com
+      LETSENCRYPT_HOST: www.xiaoxiang.io
+      VIRTUAL_HOST: www.xiaoxiang.io
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - ghost
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true 
+    volumes:
+      - ~/xiaoxiang.io/proxy_custom.conf:/etc/nginx/conf.d/proxy_custom.conf
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ~/xiaoxiang.io/data/letsencrypt/certs:/etc/nginx/certs:ro
+      - ~/xiaoxiang.io/data/letsencrypt/vhost.d:/etc/nginx/vhost.d:ro
+      - ~/xiaoxiang.io/data/letsencrypt/html:/usr/share/nginx/html:ro
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ~/xiaoxiang.io/data/letsencrypt/certs:/etc/nginx/certs
+      - ~/xiaoxiang.io/data/letsencrypt/vhost.d:/etc/nginx/vhost.d
+      - ~/xiaoxiang.io/data/letsencrypt/html:/usr/share/nginx/html
+

@@ -5,7 +5,7 @@ services:
     image: mariadb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Kevinchen599
+      MYSQL_ROOT_PASSWORD: xiaoxiang
     volumes:
       - ~/xiaoxiang.io/data/mysql:/var/lib/mysql
 
@@ -13,7 +13,7 @@ services:
     image: wordpress
     restart: always
     environment:
-      WORDPRESS_DB_PASSWORD: wwwtwinscom
+      WORDPRESS_DB_PASSWORD: xiaoxiang
       LETSENCRYPT_EMAIL: shdxiang@qq.com
       LETSENCRYPT_HOST: xiaoxiang.io
       VIRTUAL_HOST: xiaoxiang.io
@@ -27,7 +27,7 @@ services:
     restart: always
     environment:
       SERVER_REDIRECT: xiaoxiang.io
-      LETSENCRYPT_EMAIL: 592719479@qq.com
+      LETSENCRYPT_EMAIL: shdxiang@qq.com
       LETSENCRYPT_HOST: www.xiaoxiang.io
       VIRTUAL_HOST: www.xiaoxiang.io
 
