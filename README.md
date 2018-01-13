@@ -1,8 +1,6 @@
 # xiaoxiang.io
 
-Start a blog platform with:
-
-- [WordPress](https://wordpress.org/) and [Ghost](https://ghost.org/) supported.
+Start a blog platform([WordPress](https://wordpress.org/) or [Ghost](https://ghost.org/)) with:
 
 - `HTTPS` supported.
 
