@@ -65,3 +65,18 @@ services:
       - ~/xiaoxiang.io/data/letsencrypt/certs:/etc/nginx/certs
       - ~/xiaoxiang.io/data/letsencrypt/vhost.d:/etc/nginx/vhost.d
       - ~/xiaoxiang.io/data/letsencrypt/html:/usr/share/nginx/html
+
+  isso:
+    image: sheogorath/isso-docker
+    restart: always
+    volumes:
+      - ~/xiaoxiang.io/data/isso:/data
+    environment:
+      ISSO_HOST: xiaoxiang.io
+      ISSO_MAX_AGE:	24m
+      ISSO_REPLY_TO_SELF:	false
+      ISSO_REQUIRE_EMAIL:	false
+      ISSO_REQUIRE_AUTHOR: false
+      LETSENCRYPT_EMAIL: shdxiang@qq.com
+      LETSENCRYPT_HOST: isso.xiaoxiang.io
+      VIRTUAL_HOST: isso.xiaoxiang.io
