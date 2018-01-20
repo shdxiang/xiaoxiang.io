@@ -69,14 +69,18 @@ services:
   isso:
     image: sheogorath/isso-docker
     restart: always
+    depends_on:
+      - nginx-proxy
+    ports:
+      - 8086:80
     volumes:
       - ~/xiaoxiang.io/data/isso:/data
     environment:
-      ISSO_HOST: xiaoxiang.io
-      ISSO_MAX_AGE:	24m
-      ISSO_REPLY_TO_SELF:	false
-      ISSO_REQUIRE_EMAIL:	false
-      ISSO_REQUIRE_AUTHOR: false
+      ISSO_HOST: https://xiaoxiang.io
+      ISSO_MAX_AGE: 24m
+      ISSO_REPLY_TO_SELF: "false"
+      ISSO_REQUIRE_EMAIL: "false"
+      ISSO_REQUIRE_AUTHOR: "true"
       LETSENCRYPT_EMAIL: shdxiang@qq.com
       LETSENCRYPT_HOST: isso.xiaoxiang.io
       VIRTUAL_HOST: isso.xiaoxiang.io
